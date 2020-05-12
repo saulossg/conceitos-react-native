@@ -18,9 +18,8 @@ export default function App() {
   useEffect(() => {
     const fetchRepo = async () => {
       try {
-    const result = await api.get('repositories');
-      setRepositories(result.data);
-      console.log(result.data);
+          const result = await api.get('repositories');
+          setRepositories(result.data);
       } catch (erro) {
         console.log(erro);
       }
@@ -32,6 +31,7 @@ export default function App() {
 
   async function handleLikeRepository(id) {
     // Implement "Like Repository" functionality
+    await api.post(`repositories/${id}/likes`)
   }
 
   return (
@@ -56,8 +56,15 @@ export default function App() {
                   <Text style={styles.likeText}>
                     {repository.likes}
                   </Text>
-
                 </View>
+
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => handleLikeRepository(repository.id)}
+                  testID={`like-button-1`}
+                >
+                  <Text style={styles.buttonText}>Curti</Text>
+                </TouchableOpacity>
 
               </View>
             )}
