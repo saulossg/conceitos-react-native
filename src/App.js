@@ -30,8 +30,11 @@ export default function App() {
   }, []);
 
   async function handleLikeRepository(id) {
-    // Implement "Like Repository" functionality
-    await api.post(`repositories/${id}/likes`)
+
+    const repositoryIndex = repositories.findIndex(repository => repository.id === id);  
+    repositories[repositoryIndex].likes = (await api.post(`repositories/${id}/like`)).data.likes
+    const newRepositories = [...repositories];
+    setRepositories(newRepositories);
   }
 
   return (
@@ -44,6 +47,7 @@ export default function App() {
             data={repositories}
             keyExtractor={repository => repository.id}
             renderItem={({ item: repository }) => (
+              <>
               <View style={styles.repositoryContainer}>
 
                 <Text style={styles.repository} >{ repository.title }</Text>
@@ -53,20 +57,23 @@ export default function App() {
                 </View>
 
                 <View style={styles.likesContainer}>
-                  <Text style={styles.likeText}>
-                    {repository.likes}
+                  <Text   
+                     style={styles.likeText}
+                     testID={`repository-likes-${repository.id}`}>
+                    {repository.likes} {repository.likes > 1 ? 'curtidas' : 'curtida'} 
                   </Text>
                 </View>
 
                 <TouchableOpacity
                   style={styles.button}
+                  activeOpacity={0.6}
                   onPress={() => handleLikeRepository(repository.id)}
-                  testID={`like-button-1`}
+                  testID={`like-button-${repository.id}`}
                 >
-                  <Text style={styles.buttonText}>Curti</Text>
+                  <Text style={styles.buttonText}>Curtir</Text>
                 </TouchableOpacity>
-
               </View>
+            </>
             )}
          />
       </SafeAreaView>
